@@ -1,0 +1,12 @@
+{
+    "id": "com.github.adriadam10.mermaid",
+    "name": "Mermaid",
+    "description": "Renders ```mermaid code blocks in posts as diagrams.",
+    "homepage_url": "https://github.com/adriadam10/mattermost-plugin-mermaid",
+    "support_url": "https://github.com/adriadam10/mattermost-plugin-mermaid/issues",
+    "version": "0.1.0",
+    "min_server_version": "9.1.0",
+    "webapp": {
+        "bundle_path": "webapp/dist/main.js"
+    }
+}
