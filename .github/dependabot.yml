@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /webapp
+    schedule:
+      interval: weekly
+    groups:
+      # Build tooling in a single PR; mermaid goes on its own since it changes what users see.
+      build-tooling:
+        patterns: ['*']
+        exclude-patterns: ['mermaid']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

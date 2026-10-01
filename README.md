@@ -26,6 +26,12 @@ Only Docker is needed:
 # -> dist/com.github.adriadam10.mermaid-<version>.tar.gz
 ```
 
+## CI and releases
+
+- Every push and PR runs the tests and the build; the plugin `.tar.gz` is attached to the run as an artifact.
+- Pushing a tag `vX.Y.Z` (matching `version` in `plugin.json`) publishes a GitHub release with the plugin.
+- Dependabot checks npm and GitHub Actions weekly. Patch/minor updates merge automatically once CI passes; majors wait for review.
+
 ## Install
 
 System Console → Plugins → Plugin Management → Upload Plugin, or with `mmctl`:
