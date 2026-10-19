@@ -86,6 +86,15 @@ function Diagram({code}) {
         }
     }, [target, codeVisible]);
 
+    // Mattermost's "Show more" only measures a post on mount, prop changes and window
+    // resize. The diagram lands later through the portal, so without this a long post
+    // is clipped at the max height with no "Show more" button.
+    useEffect(() => {
+        if (result) {
+            window.dispatchEvent(new Event('resize'));
+        }
+    }, [result, showCode]);
+
     let panel = null;
     if (result?.error) {
         panel = <div className='mermaid-plugin__error'>{`${t.error}: ${result.error}`}</div>;
