@@ -5,8 +5,8 @@ import {useSelector} from 'react-redux';
 import {isMermaidCode} from './fences.js';
 
 const STRINGS = {
-    en: {showCode: 'Show code', showDiagram: 'Show diagram', error: 'Mermaid error'},
-    es: {showCode: 'Ver código', showDiagram: 'Ver diagrama', error: 'Error de Mermaid'},
+    en: {showCode: 'Show code', showDiagram: 'Show diagram', error: 'Mermaid error', zoom: 'Click to enlarge'},
+    es: {showCode: 'Ver código', showDiagram: 'Ver diagrama', error: 'Error de Mermaid', zoom: 'Clic para ampliar'},
 };
 
 let mermaidPromise;
@@ -95,6 +95,17 @@ function Diagram({code}) {
         }
     }, [result, showCode]);
 
+    // Click to view the diagram full window, like Mattermost's image preview.
+    const [zoomed, setZoomed] = useState(false);
+    useEffect(() => {
+        if (!zoomed) {
+            return undefined;
+        }
+        const onKey = (e) => e.key === 'Escape' && setZoomed(false);
+        document.addEventListener('keydown', onKey);
+        return () => document.removeEventListener('keydown', onKey);
+    }, [zoomed]);
+
     let panel = null;
     if (result?.error) {
         panel = <div className='mermaid-plugin__error'>{`${t.error}: ${result.error}`}</div>;
@@ -104,8 +115,22 @@ function Diagram({code}) {
                 {!showCode && (
                     <div
                         className='mermaid-plugin__diagram'
+                        title={t.zoom}
+                        onClick={() => setZoomed(true)}
                         dangerouslySetInnerHTML={{__html: result.svg}}
                     />
+                )}
+                {zoomed && ReactDOM.createPortal(
+                    <div
+                        className='mermaid-plugin__overlay'
+                        onClick={() => setZoomed(false)}
+                    >
+                        <div
+                            className='mermaid-plugin__overlay-diagram'
+                            dangerouslySetInnerHTML={{__html: result.svg}}
+                        />
+                    </div>,
+                    document.body,
                 )}
                 <button
                     type='button'

@@ -10,7 +10,27 @@ const STYLES = `
     border: 1px solid rgba(var(--center-channel-color-rgb), 0.16);
     border-radius: 4px;
 }
+.mermaid-plugin__diagram { cursor: zoom-in; }
 .mermaid-plugin__diagram svg { max-width: 100%; height: auto; }
+.mermaid-plugin__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.8);
+    cursor: zoom-out;
+}
+.mermaid-plugin__overlay-diagram {
+    width: 94vw;
+    height: 90vh;
+    padding: 16px;
+    border-radius: 4px;
+    background: var(--center-channel-bg);
+}
+/* Mermaid sets an inline max-width; the zoomed copy must fill the window instead. */
+.mermaid-plugin__overlay-diagram svg { width: 100%; height: 100%; max-width: none !important; }
 .mermaid-plugin__toggle {
     padding: 2px 0;
     border: none;
