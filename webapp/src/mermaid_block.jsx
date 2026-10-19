@@ -1,12 +1,25 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 import {useSelector} from 'react-redux';
+import Panzoom from '@panzoom/panzoom';
 
 import {isMermaidCode} from './fences.js';
 
 const STRINGS = {
-    en: {showCode: 'Show code', showDiagram: 'Show diagram', error: 'Mermaid error', zoom: 'Click to enlarge'},
-    es: {showCode: 'Ver código', showDiagram: 'Ver diagrama', error: 'Error de Mermaid', zoom: 'Clic para ampliar'},
+    en: {
+        showCode: 'Show code',
+        showDiagram: 'Show diagram',
+        error: 'Mermaid error',
+        zoom: 'Click to enlarge',
+        zoomHint: 'Wheel to zoom · drag to move · double click to reset · Esc to close',
+    },
+    es: {
+        showCode: 'Ver código',
+        showDiagram: 'Ver diagrama',
+        error: 'Error de Mermaid',
+        zoom: 'Clic para ampliar',
+        zoomHint: 'Rueda para zoom · arrastra para moverte · doble clic para reiniciar · Esc para cerrar',
+    },
 };
 
 let mermaidPromise;
@@ -32,6 +45,53 @@ async function renderSvg(code) {
     });
     const {svg} = await mermaid.render(`mermaid-plugin-${++renderCount}`, code);
     return svg;
+}
+
+// Full-window view with its own zoom and pan: the enlarged diagram fits the window,
+// so without this a dense diagram can't be read any closer than that.
+function ZoomedDiagram({svg, hint, onClose}) {
+    const box = useRef(null);
+    const content = useRef(null);
+
+    useEffect(() => {
+        const panzoom = Panzoom(content.current, {maxScale: 20, minScale: 0.5, canvas: true});
+        const parent = box.current;
+        parent.addEventListener('wheel', panzoom.zoomWithWheel);
+        const reset = () => panzoom.reset();
+        parent.addEventListener('dblclick', reset);
+        return () => {
+            parent.removeEventListener('wheel', panzoom.zoomWithWheel);
+            parent.removeEventListener('dblclick', reset);
+            panzoom.destroy();
+        };
+    }, []);
+
+    return (
+        <div
+            className='mermaid-plugin__overlay'
+            onClick={(e) => e.target === e.currentTarget && onClose()}
+        >
+            <div
+                ref={box}
+                className='mermaid-plugin__overlay-diagram'
+            >
+                <div
+                    ref={content}
+                    className='mermaid-plugin__overlay-content'
+                    dangerouslySetInnerHTML={{__html: svg}}
+                />
+            </div>
+            <button
+                type='button'
+                className='mermaid-plugin__overlay-close'
+                aria-label='Close'
+                onClick={onClose}
+            >
+                {'×'}
+            </button>
+            <div className='mermaid-plugin__overlay-hint'>{hint}</div>
+        </div>
+    );
 }
 
 // Registered as a code block action: it is mounted inside every code block's hover
@@ -121,15 +181,11 @@ function Diagram({code}) {
                     />
                 )}
                 {zoomed && ReactDOM.createPortal(
-                    <div
-                        className='mermaid-plugin__overlay'
-                        onClick={() => setZoomed(false)}
-                    >
-                        <div
-                            className='mermaid-plugin__overlay-diagram'
-                            dangerouslySetInnerHTML={{__html: result.svg}}
-                        />
-                    </div>,
+                    <ZoomedDiagram
+                        svg={result.svg}
+                        hint={t.zoomHint}
+                        onClose={() => setZoomed(false)}
+                    />,
                     document.body,
                 )}
                 <button

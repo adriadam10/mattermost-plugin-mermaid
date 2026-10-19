@@ -24,13 +24,32 @@ const STYLES = `
 }
 .mermaid-plugin__overlay-diagram {
     width: 94vw;
-    height: 90vh;
-    padding: 16px;
+    height: 88vh;
+    overflow: hidden;
     border-radius: 4px;
     background: var(--center-channel-bg);
+    cursor: grab;
 }
+.mermaid-plugin__overlay-content { width: 100%; height: 100%; padding: 16px; box-sizing: border-box; }
 /* Mermaid sets an inline max-width; the zoomed copy must fill the window instead. */
-.mermaid-plugin__overlay-diagram svg { width: 100%; height: 100%; max-width: none !important; }
+.mermaid-plugin__overlay-content svg { width: 100%; height: 100%; max-width: none !important; }
+.mermaid-plugin__overlay-close {
+    position: fixed;
+    top: 12px;
+    right: 20px;
+    border: none;
+    background: none;
+    color: #fff;
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+}
+.mermaid-plugin__overlay-hint {
+    position: fixed;
+    bottom: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+}
 .mermaid-plugin__toggle {
     padding: 2px 0;
     border: none;

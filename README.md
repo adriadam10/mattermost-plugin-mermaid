@@ -4,7 +4,7 @@ Renders ` ```mermaid ` code blocks in Mattermost posts as diagrams.
 
 - Follows the user's light/dark theme.
 - "Show code" / "Show diagram" toggle under each diagram.
-- Click a diagram to view it full window (click or Esc to close), like image previews.
+- Click a diagram to view it full window, like image previews: wheel or pinch to zoom, drag to move, double click to reset, click outside or Esc to close.
 - Long posts keep Mattermost's "Show more" once the diagram has rendered.
 - Invalid diagrams fall back to the normal code block with the Mermaid error above it.
 - Webapp-only plugin (no server part). Works in the browser and the desktop app; the mobile app keeps showing the code block.
