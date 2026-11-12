@@ -8,7 +8,7 @@
     },
     "dependencies": {
         "@panzoom/panzoom": "^4.6.2",
-        "mermaid": "^12.2.0"
+        "mermaid": "^12.3.0"
     },
     "devDependencies": {
         "@babel/core": "^8.0.9",
